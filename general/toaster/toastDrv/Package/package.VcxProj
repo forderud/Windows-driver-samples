@@ -22,23 +22,11 @@
     <ProjectReference Include="..\kmdf\bus\dynamic\dynamicbus.vcxproj">
       <Project>{E5E1F492-05BB-45A3-B09F-F643DC1C6B03}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\kmdf\bus\static\StatBus.vcxproj">
-      <Project>{6C6E0C23-5B37-4BBB-8909-435078D49364}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\kmdf\filter\generic\filter.vcxproj">
-      <Project>{B39F6628-73BA-4AC3-863A-EA20892F1EFD}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\kmdf\filter\sideband\filter.vcxproj">
-      <Project>{1A40DA6D-B948-43A7-864C-962517EE0A1D}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\kmdf\func\featured\wdf_featured.vcxproj">
       <Project>{C0049CDD-7551-4681-9E30-EFE32868F651}</Project>
     </ProjectReference>
     <ProjectReference Include="..\kmdf\func\simple\wdf_simple.vcxproj">
       <Project>{1C73C590-1F01-45BF-9BFA-97F8BCEB2795}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\kmdf\toastmon\wdftoastmon.vcxproj">
-      <Project>{D15FD911-F2DA-4644-8142-6D22756AD287}</Project>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="PropertySheets">
