@@ -84,10 +84,10 @@
       <WppPreprocessorDefinitions>ENABLE_WPP_RECORDER=1</WppPreprocessorDefinitions>
       <WppScanConfigurationData>trace.h</WppScanConfigurationData>
     </ClCompile>
-    <Inf Include=".\wdffeatured.inx">
+    <Inf Include=".\wdf_featured.inx">
       <Architecture>$(InfArch)</Architecture>
       <SpecifyArchitecture>true</SpecifyArchitecture>
-      <CopyOutput>.\$(IntDir)\wdffeatured.inf</CopyOutput>
+      <CopyOutput>.\$(IntDir)\wdf_featured.inf</CopyOutput>
     </Inf>
     <MofComp Include="toaster.mof">
       <CreateBinaryMofFile>".\$(IntDir)\toaster.bmf"</CreateBinaryMofFile>
@@ -100,16 +100,16 @@
     </Wmimofck>
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>wdffeatured</TargetName>
+    <TargetName>wdf_featured</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>wdffeatured</TargetName>
+    <TargetName>wdf_featured</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <TargetName>wdffeatured</TargetName>
+    <TargetName>wdf_featured</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <TargetName>wdffeatured</TargetName>
+    <TargetName>wdf_featured</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ResourceCompile>

@@ -31,7 +31,7 @@
     <ProjectReference Include="..\kmdf\filter\sideband\filter.vcxproj">
       <Project>{1A40DA6D-B948-43A7-864C-962517EE0A1D}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\kmdf\func\featured\wdffeatured.vcxproj">
+    <ProjectReference Include="..\kmdf\func\featured\wdf_featured.vcxproj">
       <Project>{C0049CDD-7551-4681-9E30-EFE32868F651}</Project>
     </ProjectReference>
     <ProjectReference Include="..\kmdf\func\simple\wdf_simple.vcxproj">
