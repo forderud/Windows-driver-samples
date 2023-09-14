@@ -41,8 +41,8 @@ typedef struct _FILTER_EXTENSION {
 WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(FILTER_EXTENSION,
                                         FilterGetData)
 
-#define NTDEVICE_NAME_STRING      L"\\Device\\ToasterFilter"
-#define SYMBOLIC_NAME_STRING      L"\\DosDevices\\ToasterFilter"
+#define NTDEVICE_NAME_STRING      L"\\Device\\ToasterFilterX"
+#define SYMBOLIC_NAME_STRING      L"\\DosDevices\\ToasterFilterX"
 
 typedef struct _CONTROL_DEVICE_EXTENSION {
 

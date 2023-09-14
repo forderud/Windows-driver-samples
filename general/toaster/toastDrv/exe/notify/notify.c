@@ -1218,7 +1218,7 @@ SendIoctlToFilterDevice()
     // If the IOCTL is defined to have FILE_WRITE_DATA access rights, you can
     // open the device with GENERIC_WRITE and call DeviceIoControl.
     //
-    hControlDevice = CreateFile ( TEXT("\\\\.\\ToasterFilter"),
+    hControlDevice = CreateFile ( TEXT("\\\\.\\ToasterFilterX"),
                         GENERIC_READ, // Only read access
                         0, // FILE_SHARE_READ | FILE_SHARE_WRITE
                         NULL, // no SECURITY_ATTRIBUTES structure
@@ -1227,16 +1227,16 @@ SendIoctlToFilterDevice()
                         NULL); // No template file
 
     if (INVALID_HANDLE_VALUE == hControlDevice) {
-        Display(TEXT("Failed to open ToasterFilter device"));
+        Display(TEXT("Failed to open ToasterFilterX device"));
     } else {
         if (!DeviceIoControl (hControlDevice,
                               IOCTL_CUSTOM_CODE,
                               NULL, 0,
                               NULL, 0,
                               &bytes, NULL)) {
-            Display(TEXT("Ioctl to ToasterFilter device failed"));
+            Display(TEXT("Ioctl to ToasterFilterX device failed"));
         } else {
-            Display(TEXT("Ioctl to ToasterFilter device succeeded"));
+            Display(TEXT("Ioctl to ToasterFilterX device succeeded"));
         }
         CloseHandle(hControlDevice);
     }
