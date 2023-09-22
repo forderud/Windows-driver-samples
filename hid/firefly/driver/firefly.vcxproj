@@ -114,6 +114,10 @@
     <DriverSign>
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
     </DriverSign>
+    <PostBuildEvent>
+      <Command>copy *.bat $(PackageDir)
+copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\dev*.exe" $(PackageDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
@@ -133,6 +137,10 @@
     <DriverSign>
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
     </DriverSign>
+    <PostBuildEvent>
+      <Command>copy *.bat $(PackageDir)
+copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\dev*.exe" $(PackageDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Link>
@@ -152,6 +160,10 @@
     <DriverSign>
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
     </DriverSign>
+    <PostBuildEvent>
+      <Command>copy *.bat $(PackageDir)
+copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\dev*.exe" $(PackageDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Link>
@@ -171,6 +183,10 @@
     <DriverSign>
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
     </DriverSign>
+    <PostBuildEvent>
+      <Command>copy *.bat $(PackageDir)
+copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\dev*.exe" $(PackageDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="device.c" />
