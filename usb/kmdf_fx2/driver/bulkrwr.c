@@ -30,7 +30,7 @@ Arguments:
     WDFUSBPIPE                  pipe;
     NTSTATUS                    status;
     WDFMEMORY                   reqMemory;
-    PDEVICE_CONTEXT             pDeviceContext;
+    DEVICE_CONTEXT*             pDeviceContext;
     GUID                        activity = RequestToActivityId(Request);
 
     UNREFERENCED_PARAMETER(Queue);
@@ -180,7 +180,7 @@ Arguments:
     NTSTATUS                    status;
     WDFUSBPIPE                  pipe;
     WDFMEMORY                   reqMemory;
-    PDEVICE_CONTEXT             pDeviceContext;
+    DEVICE_CONTEXT*             pDeviceContext;
     GUID                        activity = RequestToActivityId(Request);
 
     UNREFERENCED_PARAMETER(Queue);

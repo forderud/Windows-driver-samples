@@ -30,7 +30,7 @@ Arguments:
 --*/
 {
     WDFDEVICE           device;
-    PDEVICE_CONTEXT     pDevContext;
+    DEVICE_CONTEXT*     pDevContext;
     size_t              bytesReturned = 0;
     BAR_GRAPH_STATE*    barGraphState = NULL;
     SWITCH_STATE*       switchState = NULL;
@@ -293,7 +293,7 @@ Arguments:
 
 VOID
 StopAllPipes(
-    IN PDEVICE_CONTEXT DeviceContext
+    IN DEVICE_CONTEXT* DeviceContext
     )
 {
     WdfIoTargetStop(WdfUsbTargetPipeGetIoTarget(DeviceContext->InterruptPipe),
@@ -306,7 +306,7 @@ StopAllPipes(
 
 NTSTATUS
 StartAllPipes(
-    IN PDEVICE_CONTEXT DeviceContext
+    IN DEVICE_CONTEXT* DeviceContext
     )
 {
     NTSTATUS status;
@@ -343,7 +343,7 @@ Arguments:
     Device - Handle to a framework device
 --*/
 {
-    PDEVICE_CONTEXT pDeviceContext;
+    DEVICE_CONTEXT* pDeviceContext;
     NTSTATUS status;
 
     TraceEvents(TRACE_LEVEL_INFORMATION, DBG_IOCTL, "--> ResetDevice\n");
@@ -378,7 +378,7 @@ Arguments:
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 ReenumerateDevice(
-    _In_ PDEVICE_CONTEXT DevContext
+    _In_ DEVICE_CONTEXT* DevContext
     )
 /*++
 Routine Description
@@ -442,7 +442,7 @@ Arguments:
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 GetBarGraphState(
-    _In_ PDEVICE_CONTEXT DevContext,
+    _In_ DEVICE_CONTEXT* DevContext,
     _Out_ BAR_GRAPH_STATE* BarGraphState
     )
 /*++
@@ -515,7 +515,7 @@ Arguments:
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 SetBarGraphState(
-    _In_ PDEVICE_CONTEXT DevContext,
+    _In_ DEVICE_CONTEXT* DevContext,
     _In_ BAR_GRAPH_STATE* BarGraphState
     )
 /*++
@@ -584,7 +584,7 @@ Arguments:
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 GetSevenSegmentState(
-    _In_ PDEVICE_CONTEXT DevContext,
+    _In_ DEVICE_CONTEXT* DevContext,
     _Out_ PUCHAR SevenSegment
     )
 /*++
@@ -664,7 +664,7 @@ Arguments:
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 SetSevenSegmentState(
-    _In_ PDEVICE_CONTEXT DevContext,
+    _In_ DEVICE_CONTEXT* DevContext,
     _In_ PUCHAR SevenSegment
     )
 /*++
@@ -734,7 +734,7 @@ Arguments:
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 GetSwitchState(
-    _In_ PDEVICE_CONTEXT DevContext,
+    _In_ DEVICE_CONTEXT* DevContext,
     _In_ SWITCH_STATE* SwitchState
     )
 /*++
@@ -816,7 +816,7 @@ Arguments:
 {
     NTSTATUS            status;
     WDFREQUEST          request;
-    PDEVICE_CONTEXT     pDevContext;
+    DEVICE_CONTEXT*     pDevContext;
     size_t              bytesReturned = 0;
     SWITCH_STATE*       switchState = NULL;
 

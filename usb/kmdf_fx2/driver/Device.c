@@ -28,7 +28,7 @@ Arguments:
     WDFDEVICE                           device;
     WDF_DEVICE_PNP_CAPABILITIES         pnpCaps;
     WDF_IO_QUEUE_CONFIG                 ioQueueConfig;
-    PDEVICE_CONTEXT                     pDevContext;
+    DEVICE_CONTEXT*                     pDevContext;
     WDFQUEUE                            queue;
     GUID                                activity;
     UNICODE_STRING                      symbolicLinkName;
@@ -354,7 +354,7 @@ Arguments:
 --*/
 {
     NTSTATUS                            status;
-    PDEVICE_CONTEXT                     pDeviceContext;
+    DEVICE_CONTEXT*                     pDeviceContext;
     WDF_USB_DEVICE_INFORMATION          deviceInfo;
     ULONG                               waitWakeEnable;
 
@@ -478,7 +478,7 @@ Arguments:
         PowerDeviceUnspecified.
 --*/
 {
-    PDEVICE_CONTEXT         pDeviceContext;
+    DEVICE_CONTEXT*         pDeviceContext;
     NTSTATUS                status;
     BOOLEAN                 isTargetStarted;
 
@@ -557,7 +557,7 @@ Return Value:
     device stack being torn down.
 --*/
 {
-    PDEVICE_CONTEXT         pDeviceContext;
+    DEVICE_CONTEXT*         pDeviceContext;
 
     TraceEvents(TRACE_LEVEL_INFORMATION, DBG_POWER,
           "-->OsrFxEvtDeviceD0Exit - moving to %s\n",
@@ -683,7 +683,7 @@ Arguments:
 {
     WDF_USB_DEVICE_SELECT_CONFIG_PARAMS configParams;
     NTSTATUS                            status = STATUS_SUCCESS;
-    PDEVICE_CONTEXT                     pDeviceContext;
+    DEVICE_CONTEXT*                     pDeviceContext;
     WDFUSBPIPE                          pipe;
     WDF_USB_PIPE_INFORMATION            pipeInfo;
     UCHAR                               index;
@@ -792,7 +792,7 @@ Routine Description:
     and store them in the device context.
 --*/
 {
-    PDEVICE_CONTEXT pDevContext = GetDeviceContext(Device);
+    DEVICE_CONTEXT* pDevContext = GetDeviceContext(Device);
 
     WDF_OBJECT_ATTRIBUTES objectAttributes;
 

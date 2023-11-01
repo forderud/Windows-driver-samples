@@ -32,7 +32,7 @@ Environment:
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 OsrFxConfigContReaderForInterruptEndPoint(
-    _In_ PDEVICE_CONTEXT DeviceContext
+    _In_ DEVICE_CONTEXT* DeviceContext
     )
 /*++
 
@@ -112,7 +112,7 @@ Return Value:
 {
     PUCHAR          switchState = NULL;
     WDFDEVICE       device;
-    PDEVICE_CONTEXT pDeviceContext = Context;
+    DEVICE_CONTEXT* pDeviceContext = Context;
 
     UNREFERENCED_PARAMETER(Pipe);
 
@@ -165,7 +165,7 @@ OsrFxEvtUsbInterruptReadersFailed(
     )
 {
     WDFDEVICE device = WdfIoTargetGetDevice(WdfUsbTargetPipeGetIoTarget(Pipe));
-    PDEVICE_CONTEXT pDeviceContext = GetDeviceContext(device);
+    DEVICE_CONTEXT* pDeviceContext = GetDeviceContext(device);
 
     UNREFERENCED_PARAMETER(UsbdStatus);
 

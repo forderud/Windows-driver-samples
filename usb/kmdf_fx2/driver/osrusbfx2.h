@@ -77,7 +77,7 @@ typedef struct _DEVICE_CONTEXT {
 
     WDFMEMORY                       LocationMemory;
     PCWSTR                          Location;
-} DEVICE_CONTEXT, *PDEVICE_CONTEXT;
+} DEVICE_CONTEXT;
 
 WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(DEVICE_CONTEXT, GetDeviceContext)
 
@@ -147,41 +147,41 @@ SelectInterfaces(
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 ReenumerateDevice(
-    _In_ PDEVICE_CONTEXT DevContext
+    _In_ DEVICE_CONTEXT* DevContext
     );
 
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 GetBarGraphState(
-    _In_ PDEVICE_CONTEXT DevContext,
+    _In_ DEVICE_CONTEXT* DevContext,
     _Out_ BAR_GRAPH_STATE* BarGraphState
     );
 
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 SetBarGraphState(
-    _In_ PDEVICE_CONTEXT DevContext,
+    _In_ DEVICE_CONTEXT* DevContext,
     _In_ BAR_GRAPH_STATE* BarGraphState
     );
 
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 GetSevenSegmentState(
-    _In_ PDEVICE_CONTEXT DevContext,
+    _In_ DEVICE_CONTEXT* DevContext,
     _Out_ PUCHAR SevenSegment
     );
 
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 SetSevenSegmentState(
-    _In_ PDEVICE_CONTEXT DevContext,
+    _In_ DEVICE_CONTEXT* DevContext,
     _In_ PUCHAR SevenSegment
     );
 
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 GetSwitchState(
-    _In_ PDEVICE_CONTEXT DevContext,
+    _In_ DEVICE_CONTEXT* DevContext,
     _In_ SWITCH_STATE* SwitchState
     );
 
@@ -200,7 +200,7 @@ OsrFxSetPowerPolicy(
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 OsrFxConfigContReaderForInterruptEndPoint(
-    _In_ PDEVICE_CONTEXT DeviceContext
+    _In_ DEVICE_CONTEXT* DeviceContext
     );
 
 EVT_WDF_USB_READER_COMPLETION_ROUTINE OsrFxEvtUsbInterruptPipeReadComplete;
