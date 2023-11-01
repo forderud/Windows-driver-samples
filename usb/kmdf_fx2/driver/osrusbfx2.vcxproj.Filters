@@ -76,6 +76,7 @@
     </ClInclude>
     <ClInclude Include="*.h;*.hpp;*.hxx;*.hm;*.inl;*.xsd" />
     <ClInclude Include="*.h;*.hpp;*.hxx;*.hm;*.inl;*.xsd" />
+    <ClInclude Include="..\inc\public.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="osrusbfx2.rc" />
