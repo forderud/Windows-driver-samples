@@ -1,26 +1,3 @@
-/*++
-
-Copyright (c) Microsoft Corporation.  All rights reserved.
-
-    THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
-    KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-    IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
-    PURPOSE.
-
-Module Name:
-
-    Ioctl.c
-
-Abstract:
-
-    USB device driver for OSR USB-FX2 Learning Kit
-
-Environment:
-
-    Kernel mode only
-
---*/
-
 #include <osrusbfx2.h>
 
 #if defined(EVENT_TRACING)
@@ -36,29 +13,20 @@ OsrFxEvtIoDeviceControl(
     _In_ ULONG      IoControlCode
     )
 /*++
-
 Routine Description:
-
     This event is called when the framework receives IRP_MJ_DEVICE_CONTROL
     requests from the system.
 
 Arguments:
-
     Queue - Handle to the framework queue object that is associated
             with the I/O request.
     Request - Handle to a framework request object.
-
     OutputBufferLength - length of the request's output buffer,
                         if an output buffer is available.
     InputBufferLength - length of the request's input buffer,
                         if an input buffer is available.
-
     IoControlCode - the driver-defined or system-defined I/O control code
                     (IOCTL) that is associated with the request.
-Return Value:
-
-    VOID
-
 --*/
 {
     WDFDEVICE           device;
@@ -73,16 +41,13 @@ Return Value:
     UNREFERENCED_PARAMETER(InputBufferLength);
     UNREFERENCED_PARAMETER(OutputBufferLength);
 
-    //
     // If your driver is at the top of its driver stack, EvtIoDeviceControl is called
     // at IRQL = PASSIVE_LEVEL.
-    //
     _IRQL_limited_to_(PASSIVE_LEVEL);
 
     TraceEvents(TRACE_LEVEL_INFORMATION, DBG_IOCTL, "--> OsrFxEvtIoDeviceControl\n");
-    //
+
     // initialize variables
-    //
     device = WdfIoQueueGetDevice(Queue);
     pDevContext = GetDeviceContext(device);
 
@@ -93,9 +58,7 @@ Return Value:
         PUSB_CONFIGURATION_DESCRIPTOR   configurationDescriptor = NULL;
         USHORT                          requiredSize = 0;
 
-        //
         // First get the size of the config descriptor
-        //
         status = WdfUsbTargetDeviceRetrieveConfigDescriptor(
                                     pDevContext->UsbDevice,
                                     NULL,
@@ -107,9 +70,7 @@ Return Value:
             break;
         }
 
-        //
         // Get the buffer - make sure the buffer is big enough
-        //
         status = WdfRequestRetrieveOutputBuffer(Request,
                                         (size_t)requiredSize,  // MinimumRequired
                                         &configurationDescriptor,
@@ -141,22 +102,16 @@ Return Value:
         break;
 
     case IOCTL_OSRUSBFX2_REENUMERATE_DEVICE:
-
-        //
         // Otherwise, call our function to reenumerate the
         //  device
-        //
         status = ReenumerateDevice(pDevContext);
 
         bytesReturned = 0;
         break;
 
     case IOCTL_OSRUSBFX2_GET_BAR_GRAPH_DISPLAY:
-
-        //
         // Make sure the caller's output buffer is large enough
         //  to hold the state of the bar graph
-        //
         status = WdfRequestRetrieveOutputBuffer(Request,
                             sizeof(BAR_GRAPH_STATE),
                             &barGraphState,
@@ -167,14 +122,11 @@ Return Value:
                 "User's output buffer is too small for this IOCTL, expecting an BAR_GRAPH_STATE\n");
             break;
         }
-        //
+
         // Call our function to get the bar graph state
-        //
         status = GetBarGraphState(pDevContext, barGraphState);
 
-        //
         // If we succeeded return the user their data
-        //
         if (NT_SUCCESS(status)) {
 
             bytesReturned = sizeof(BAR_GRAPH_STATE);
@@ -198,14 +150,10 @@ Return Value:
             break;
         }
 
-        //
         // Call our routine to set the bar graph state
-        //
         status = SetBarGraphState(pDevContext, barGraphState);
 
-        //
         // There's no data returned for this call
-        //
         bytesReturned = 0;
         break;
 
@@ -222,14 +170,10 @@ Return Value:
             break;
         }
 
-        //
         // Call our function to get the 7 segment state
-        //
         status = GetSevenSegmentState(pDevContext, sevenSegment);
 
-        //
         // If we succeeded return the user their data
-        //
         if (NT_SUCCESS(status)) {
 
             bytesReturned = sizeof(UCHAR);
@@ -254,14 +198,10 @@ Return Value:
             break;
         }
 
-        //
         // Call our routine to set the 7 segment state
-        //
         status = SetSevenSegmentState(pDevContext, sevenSegment);
 
-        //
         // There's no data returned for this call
-        //
         bytesReturned = 0;
         break;
 
@@ -280,32 +220,23 @@ Return Value:
 
         }
 
-        //
         // Call our routine to get the state of the switches
-        //
         status = GetSwitchState(pDevContext, switchState);
 
-        //
         // If successful, return the user their data
-        //
         if (NT_SUCCESS(status)) {
 
             bytesReturned = sizeof(SWITCH_STATE);
 
         } else {
-            //
             // Don't return any data
-            //
             bytesReturned = 0;
         }
         break;
 
     case IOCTL_OSRUSBFX2_GET_INTERRUPT_MESSAGE:
-
-        //
         // Forward the request to an interrupt message queue and dont complete
         // the request until an interrupt from the USB device occurs.
-        //
         status = WdfRequestForwardToIoQueue(Request, pDevContext->InterruptMsgQueue);
         if (NT_SUCCESS(status)) {
             requestPending = TRUE;
@@ -333,27 +264,17 @@ ResetPipe(
     _In_ WDFUSBPIPE             Pipe
     )
 /*++
-
 Routine Description:
-
     This routine resets the pipe.
 
 Arguments:
-
     Pipe - framework pipe handle
-
-Return Value:
-
-    NT status value
-
 --*/
 {
     NTSTATUS          status;
 
-    //
     //  This routine synchronously submits a URB_FUNCTION_RESET_PIPE
     // request down the stack.
-    //
     status = WdfUsbTargetPipeResetSynchronously(Pipe,
                                 WDF_NO_HANDLE, // WDFREQUEST
                                 NULL // PWDF_REQUEST_SEND_OPTIONS
@@ -414,20 +335,12 @@ ResetDevice(
     _In_ WDFDEVICE Device
     )
 /*++
-
 Routine Description:
-
     This routine calls WdfUsbTargetDeviceResetPortSynchronously to reset the device if it's still
     connected.
 
 Arguments:
-
     Device - Handle to a framework device
-
-Return Value:
-
-    NT status value
-
 --*/
 {
     PDEVICE_CONTEXT pDeviceContext;
@@ -437,9 +350,7 @@ Return Value:
 
     pDeviceContext = GetDeviceContext(Device);
 
-    //
     // A NULL timeout indicates an infinite wake
-    //
     status = WdfWaitLockAcquire(pDeviceContext->ResetDeviceWaitLock, NULL);
     if (!NT_SUCCESS(status)) {
         TraceEvents(TRACE_LEVEL_ERROR, DBG_IOCTL, "ResetDevice - could not acquire lock\n");
@@ -470,19 +381,11 @@ ReenumerateDevice(
     _In_ PDEVICE_CONTEXT DevContext
     )
 /*++
-
 Routine Description
-
     This routine re-enumerates the USB device.
 
 Arguments:
-
     pDevContext - One of our device extensions
-
-Return Value:
-
-    NT status value
-
 --*/
 {
     NTSTATUS status;
@@ -525,10 +428,7 @@ Return Value:
 
     TraceEvents(TRACE_LEVEL_VERBOSE, DBG_IOCTL,"<-- ReenumerateDevice\n");
 
-    //
     // Send event to eventlog
-    //
-
     activity = DeviceToActivityId(WdfObjectContextGetObject(DevContext));
     EventWriteDeviceReenumerated(&activity,
                                  DevContext->DeviceName,
@@ -546,21 +446,12 @@ GetBarGraphState(
     _Out_ PBAR_GRAPH_STATE BarGraphState
     )
 /*++
-
 Routine Description
-
     This routine gets the state of the bar graph on the board
 
 Arguments:
-
     DevContext - One of our device extensions
-
     BarGraphState - Struct that receives the bar graph's state
-
-Return Value:
-
-    NT status value
-
 --*/
 {
     NTSTATUS status;
@@ -588,9 +479,7 @@ Return Value:
                                         0, // Value
                                         0); // Index
 
-    //
     // Set the buffer to 0, the board will OR in everything that is set
-    //
     BarGraphState->BarsAsUChar = 0;
 
 
@@ -630,21 +519,12 @@ SetBarGraphState(
     _In_ PBAR_GRAPH_STATE BarGraphState
     )
 /*++
-
 Routine Description
-
     This routine sets the state of the bar graph on the board
 
 Arguments:
-
     DevContext - One of our device extensions
-
     BarGraphState - Struct that describes the bar graph's desired state
-
-Return Value:
-
-    NT status value
-
 --*/
 {
     NTSTATUS status;
@@ -708,9 +588,7 @@ GetSevenSegmentState(
     _Out_ PUCHAR SevenSegment
     )
 /*++
-
 Routine Description
-
     This routine gets the state of the 7 segment display on the board
     by sending a synchronous control command.
 
@@ -722,15 +600,8 @@ Routine Description
           completes immediately b) and for demonstration.
 
 Arguments:
-
     DevContext - One of our device extensions
-
     SevenSegment - receives the state of the 7 segment display
-
-Return Value:
-
-    NT status value
-
 --*/
 {
     NTSTATUS status;
@@ -759,9 +630,7 @@ Return Value:
                                         0, // Value
                                         0); // Index
 
-    //
     // Set the buffer to 0, the board will OR in everything that is set
-    //
     *SevenSegment = 0;
 
     WDF_MEMORY_DESCRIPTOR_INIT_BUFFER(&memDesc,
@@ -799,21 +668,12 @@ SetSevenSegmentState(
     _In_ PUCHAR SevenSegment
     )
 /*++
-
 Routine Description
-
     This routine sets the state of the 7 segment display on the board
 
 Arguments:
-
     DevContext - One of our device extensions
-
     SevenSegment - desired state of the 7 segment display
-
-Return Value:
-
-    NT status value
-
 --*/
 {
     NTSTATUS status;
@@ -878,19 +738,11 @@ GetSwitchState(
     _In_ PSWITCH_STATE SwitchState
     )
 /*++
-
 Routine Description
-
     This routine gets the state of the switches on the board
 
 Arguments:
-
     DevContext - One of our device extensions
-
-Return Value:
-
-    NT status value
-
 --*/
 {
     NTSTATUS status;
@@ -954,20 +806,12 @@ OsrUsbIoctlGetInterruptMessage(
     _In_ NTSTATUS  ReaderStatus
     )
 /*++
-
 Routine Description
-
     This method handles the completion of the pended request for the IOCTL
     IOCTL_OSRUSBFX2_GET_INTERRUPT_MESSAGE.
 
 Arguments:
-
     Device - Handle to a framework device.
-
-Return Value:
-
-    None.
-
 --*/
 {
     NTSTATUS            status;
@@ -979,11 +823,8 @@ Return Value:
     pDevContext = GetDeviceContext(Device);
 
     do {
-
-        //
         // Check if there are any pending requests in the Interrupt Message Queue.
         // If a request is found then complete the pending request.
-        //
         status = WdfIoQueueRetrieveNextRequest(pDevContext->InterruptMsgQueue, &request);
 
         if (NT_SUCCESS(status)) {
@@ -999,10 +840,7 @@ Return Value:
                 bytesReturned = sizeof(SWITCH_STATE);
 
             } else {
-
-                //
                 // Copy the state information saved by the continuous reader.
-                //
                 if (NT_SUCCESS(ReaderStatus)) {
                     switchState->SwitchesAsUChar = pDevContext->CurrentSwitchState;
                     bytesReturned = sizeof(SWITCH_STATE);
@@ -1011,10 +849,8 @@ Return Value:
                 }
             }
 
-            //
             // Complete the request.  If we failed to get the output buffer then
             // complete with that status.  Otherwise complete with the status from the reader.
-            //
             WdfRequestCompleteWithInformation(request,
                                               NT_SUCCESS(status) ? ReaderStatus : status,
                                               bytesReturned);
@@ -1031,5 +867,3 @@ Return Value:
     return;
 
 }
-
-

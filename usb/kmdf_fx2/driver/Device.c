@@ -1,27 +1,3 @@
-/*++
-
-Copyright (c) Microsoft Corporation.  All rights reserved.
-
-    THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
-    KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-    IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
-    PURPOSE.
-
-Module Name:
-
-    Device.c
-
-Abstract:
-
-    USB device driver for OSR USB-FX2 Learning Kit
-
-Environment:
-
-    Kernel mode only
-
-
---*/
-
 #include <osrusbfx2.h>
 #include <devpkey.h>
 
@@ -36,22 +12,14 @@ OsrFxEvtDeviceAdd(
     )
 /*++
 Routine Description:
-
     EvtDeviceAdd is called by the framework in response to AddDevice
     call from the PnP manager. We create and initialize a device object to
     represent a new instance of the device. All the software resources
     should be allocated in this callback.
 
 Arguments:
-
     Driver - Handle to a framework driver object created in DriverEntry
-
     DeviceInit - Pointer to a framework-allocated WDFDEVICE_INIT structure.
-
-Return Value:
-
-    NTSTATUS
-
 --*/
 {
     WDF_PNPPOWER_EVENT_CALLBACKS        pnpPowerCallbacks;
@@ -71,26 +39,19 @@ Return Value:
 
     TraceEvents(TRACE_LEVEL_INFORMATION, DBG_PNP,"--> OsrFxEvtDeviceAdd routine\n");
 
-    //
     // Initialize the pnpPowerCallbacks structure.  Callback events for PNP
     // and Power are specified here.  If you don't supply any callbacks,
     // the Framework will take appropriate default actions based on whether
     // DeviceInit is initialized to be an FDO, a PDO or a filter device
     // object.
-    //
-
     WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&pnpPowerCallbacks);
-    //
+
     // For usb devices, PrepareHardware callback is the to place select the
     // interface and configure the device.
-    //
     pnpPowerCallbacks.EvtDevicePrepareHardware = OsrFxEvtDevicePrepareHardware;
 
-    //
     // These two callbacks start and stop the wdfusb pipe continuous reader
     // as we go in and out of the D0-working state.
-    //
-
     pnpPowerCallbacks.EvtDeviceD0Entry = OsrFxEvtDeviceD0Entry;
     pnpPowerCallbacks.EvtDeviceD0Exit  = OsrFxEvtDeviceD0Exit;
     pnpPowerCallbacks.EvtDeviceSelfManagedIoFlush = OsrFxEvtDeviceSelfManagedIoFlush;
@@ -99,11 +60,9 @@ Return Value:
 
     WdfDeviceInitSetIoType(DeviceInit, WdfDeviceIoBuffered);
 
-    //
     // Now specify the size of device extension where we track per device
     // context.DeviceInit is completely initialized. So call the framework
     // to create the device and attach it to the lower stack.
-    //
     WDF_OBJECT_ATTRIBUTES_INIT_CONTEXT_TYPE(&attributes, DEVICE_CONTEXT);
 
     status = WdfDeviceCreate(&DeviceInit, &attributes, &device);
@@ -113,46 +72,33 @@ Return Value:
         return status;
     }
 
-    //
     // Setup the activity ID so that we can log events using it.
-    //
-
     activity = DeviceToActivityId(device);
 
-    //
     // Get the DeviceObject context by using accessor function specified in
     // the WDF_DECLARE_CONTEXT_TYPE_WITH_NAME macro for DEVICE_CONTEXT.
-    //
     pDevContext = GetDeviceContext(device);
 
-    //
     // Get the device's friendly name and location so that we can use it in
     // error logging.  If this fails then it will setup dummy strings.
-    //
-
     GetDeviceEventLoggingNames(device);
 
-    //
     // Tell the framework to set the SurpriseRemovalOK in the DeviceCaps so
     // that you don't get the popup in usermode when you surprise remove the device.
-    //
     WDF_DEVICE_PNP_CAPABILITIES_INIT(&pnpCaps);
     pnpCaps.SurpriseRemovalOK = WdfTrue;
 
     WdfDeviceSetPnpCapabilities(device, &pnpCaps);
 
-    //
     // Create a parallel default queue and register an event callback to
     // receive ioctl requests. We will create separate queues for
     // handling read and write requests. All other requests will be
     // completed with error status automatically by the framework.
-    //
     WDF_IO_QUEUE_CONFIG_INIT_DEFAULT_QUEUE(&ioQueueConfig,
                              WdfIoQueueDispatchParallel);
 
     ioQueueConfig.EvtIoDeviceControl    = OsrFxEvtIoDeviceControl;
 
-    //
     // By default, Static Driver Verifier (SDV) displays a warning if it
     // doesn't find the EvtIoStop callback on a power-managed queue.
     // The 'assume' below causes SDV to suppress this warning. If the driver
@@ -168,7 +114,6 @@ Return Value:
     // amount of time to complete, or if the driver forwarded the requests
     // to a lower driver/another stack, the queue should have an
     // EvtIoStop/EvtIoResume.
-    //
     __analysis_assume(ioQueueConfig.EvtIoStop != 0);
     status = WdfIoQueueCreate(device,
                              &ioQueueConfig,
@@ -182,12 +127,10 @@ Return Value:
         goto Error;
     }
 
-    //
     // We will create a separate sequential queue and configure it
     // to receive read requests.  We also need to register a EvtIoStop
     // handler so that we can acknowledge requests that are pending
     // at the target driver.
-    //
     WDF_IO_QUEUE_CONFIG_INIT(&ioQueueConfig, WdfIoQueueDispatchSequential);
 
     ioQueueConfig.EvtIoRead = OsrFxEvtIoRead;
@@ -218,11 +161,8 @@ Return Value:
         goto Error;
     }
 
-
-    //
     // We will create another sequential queue and configure it
     // to receive write requests.
-    //
     WDF_IO_QUEUE_CONFIG_INIT(&ioQueueConfig, WdfIoQueueDispatchSequential);
 
     ioQueueConfig.EvtIoWrite = OsrFxEvtIoWrite;
@@ -253,20 +193,16 @@ Return Value:
         goto Error;
     }
 
-    //
     // Register a manual I/O queue for handling Interrupt Message Read Requests.
     // This queue will be used for storing Requests that need to wait for an
     // interrupt to occur before they can be completed.
-    //
     WDF_IO_QUEUE_CONFIG_INIT(&ioQueueConfig, WdfIoQueueDispatchManual);
 
-    //
     // This queue is used for requests that dont directly access the device. The
     // requests in this queue are serviced only when the device is in a fully
     // powered state and sends an interrupt. So we can use a non-power managed
     // queue to park the requests since we dont care whether the device is idle
     // or fully powered up.
-    //
     ioQueueConfig.PowerManaged = WdfFalse;
 
     status = WdfIoQueueCreate(device,
@@ -281,9 +217,7 @@ Return Value:
         goto Error;
     }
 
-    //
     // Register a device interface so that app can find our device and talk to it.
-    //
     status = WdfDeviceCreateDeviceInterface(device,
                                             (LPGUID) &GUID_DEVINTERFACE_OSRUSBFX2,
                                             NULL); // Reference String
@@ -294,11 +228,9 @@ Return Value:
         goto Error;
     }
 
-    //
     // Create the lock that we use to serialize calls to ResetDevice(). As an
     // alternative to using a WDFWAITLOCK to serialize the calls, a sequential
     // WDFQUEUE can be created and reset IOCTLs would be forwarded to it.
-    //
     WDF_OBJECT_ATTRIBUTES_INIT(&attributes);
     attributes.ParentObject = device;
 
@@ -309,11 +241,9 @@ Return Value:
         goto Error;
     }
 
-    //
     // Get the string for the device interface and set the restricted
     // property on it to allow applications bound with device metadata
     // to access the interface.
-    //
     if (g_pIoSetDeviceInterfacePropertyData != NULL) {
 
         status = WdfStringCreate(NULL,
@@ -356,7 +286,6 @@ Return Value:
         }
 #if defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
 
-        //
         // Adding Custom Capability:
         //
         // Adds a custom capability to device interface instance that allows a Windows
@@ -364,8 +293,6 @@ Return Value:
         // This capability can be defined either in INF or here as shown below. In order
         // to define it from the INF, uncomment the section "OsrUsb Interface installation"
         // from the INF and remove the block of code below.
-        //
-
         static const wchar_t customCapabilities[] = L"microsoft.hsaTestCustomCapability_q536wpkpf5cy2\0";
 
         status = g_pIoSetDeviceInterfacePropertyData(&symbolicLinkName,
@@ -396,14 +323,11 @@ Error:
         WdfObjectDelete(symbolicLinkString);
     }
 
-    //
     // Log fail to add device to the event log
-    //
     EventWriteFailAddDevice(&activity,
                             pDevContext->DeviceName,
                             pDevContext->Location,
                             status);
-
     return status;
 }
 
@@ -414,29 +338,19 @@ OsrFxEvtDevicePrepareHardware(
     WDFCMRESLIST ResourceListTranslated
     )
 /*++
-
 Routine Description:
-
     In this callback, the driver does whatever is necessary to make the
     hardware ready to use.  In the case of a USB device, this involves
     reading and selecting descriptors.
 
 Arguments:
-
     Device - handle to a device
-
     ResourceList - handle to a resource-list object that identifies the
                    raw hardware resources that the PnP manager assigned
                    to the device
-
     ResourceListTranslated - handle to a resource-list object that
                              identifies the translated hardware resources
                              that the PnP manager assigned to the device
-
-Return Value:
-
-    NT status value
-
 --*/
 {
     NTSTATUS                            status;
@@ -452,7 +366,6 @@ Return Value:
 
     pDeviceContext = GetDeviceContext(Device);
 
-    //
     // Create a USB device handle so that we can communicate with the
     // underlying USB stack. The WDFUSBDEVICE handle is used to query,
     // configure, and manage all aspects of the USB device.
@@ -462,7 +375,6 @@ Return Value:
     // for resource rebalance, we will use the same device handle but then select
     // the interfaces again because the USB stack could reconfigure the device on
     // restart.
-    //
     if (pDeviceContext->UsbDevice == NULL) {
         WDF_USB_DEVICE_CREATE_CONFIG config;
 
@@ -480,17 +392,13 @@ Return Value:
             return status;
         }
 
-        //
         // TODO: If you are fetching configuration descriptor from device for
         // selecting a configuration or to parse other descriptors, call OsrFxValidateConfigurationDescriptor
         // to do basic validation on the descriptors before you access them .
-        //
     }
 
-    //
     // Retrieve USBD version information, port driver capabilites and device
     // capabilites such as speed, power, etc.
-    //
     WDF_USB_DEVICE_INFORMATION_INIT(&deviceInfo);
 
     status = WdfUsbTargetDeviceRetrieveInformation(
@@ -509,9 +417,7 @@ Return Value:
         TraceEvents(TRACE_LEVEL_INFORMATION, DBG_PNP,
                             "IsDeviceRemoteWakeable: %s\n",
                             waitWakeEnable ? "TRUE" : "FALSE");
-        //
         // Save these for use later.
-        //
         pDeviceContext->UsbDeviceTraits = deviceInfo.Traits;
     }
     else  {
@@ -525,9 +431,7 @@ Return Value:
         return status;
     }
 
-    //
     // Enable wait-wake and idle timeout if the device supports it
-    //
     if (waitWakeEnable) {
         status = OsrFxSetPowerPolicy(Device);
         if (!NT_SUCCESS (status)) {
@@ -540,7 +444,6 @@ Return Value:
     status = OsrFxConfigContReaderForInterruptEndPoint(pDeviceContext);
 
     TraceEvents(TRACE_LEVEL_INFORMATION, DBG_PNP, "<-- EvtDevicePrepareHardware\n");
-
     return status;
 }
 
@@ -551,9 +454,7 @@ OsrFxEvtDeviceD0Entry(
     WDF_POWER_DEVICE_STATE PreviousState
     )
 /*++
-
 Routine Description:
-
     EvtDeviceD0Entry event callback must perform any operations that are
     necessary before the specified device is used.  It will be called every
     time the hardware needs to be (re-)initialized.
@@ -571,17 +472,10 @@ Routine Description:
     not do anything that will cause a page fault.
 
 Arguments:
-
     Device - Handle to a framework device object.
-
     PreviousState - Device power state which the device was in most recently.
         If the device is being newly started, this will be
         PowerDeviceUnspecified.
-
-Return Value:
-
-    NTSTATUS
-
 --*/
 {
     PDEVICE_CONTEXT         pDeviceContext;
@@ -631,9 +525,7 @@ OsrFxEvtDeviceD0Exit(
     WDF_POWER_DEVICE_STATE TargetState
     )
 /*++
-
 Routine Description:
-
     This routine undoes anything done in EvtDeviceD0Entry.  It is called
     whenever the device leaves the D0 state, which happens when the device is
     stopped, when it is removed, and when it is powered off.
@@ -655,17 +547,14 @@ Routine Description:
     anything that will cause a page fault.
 
 Arguments:
-
     Device - Handle to a framework device object.
 
     TargetState - Device power state which the device will be put in once this
         callback is complete.
 
 Return Value:
-
     Success implies that the device can be used.  Failure will result in the
     device stack being torn down.
-
 --*/
 {
     PDEVICE_CONTEXT         pDeviceContext;
@@ -688,20 +577,12 @@ OsrFxEvtDeviceSelfManagedIoFlush(
     _In_ WDFDEVICE Device
     )
 /*++
-
 Routine Description:
-
     This routine handles flush activity for the device's
     self-managed I/O operations.
 
 Arguments:
-
     Device - Handle to a framework device object.
-
-Return Value:
-
-    None
-
 --*/
 {
     // Service the interrupt message queue to drain any outstanding
@@ -717,25 +598,14 @@ OsrFxValidateConfigurationDescriptor(
     _Inout_ PUCHAR *Offset
     )
 /*++
-
 Routine Description:
-
     Validates a USB Configuration Descriptor
 
 Parameters:
-
     ConfigDesc: Pointer to the entire USB Configuration descriptor returned by the device
-
     BufferLength: Known size of buffer pointed to by ConfigDesc (Not wTotalLength)
-
     Offset: if the USBD_STATUS returned is not USBD_STATUS_SUCCESS, offet will
         be set to the address within the ConfigDesc buffer where the failure occured.
-
-Return Value:
-
-    USBD_STATUS
-    Success implies the configuration descriptor is valid.
-
 --*/
 {
 
@@ -743,23 +613,18 @@ Return Value:
     USBD_STATUS status = USBD_STATUS_SUCCESS;
     USHORT ValidationLevel = 3;
 
-    //
     // Call USBD_ValidateConfigurationDescriptor to validate the descriptors which are present in this supplied configuration descriptor.
     // USBD_ValidateConfigurationDescriptor validates that all descriptors are completely contained within the configuration descriptor buffer.
     // It also checks for interface numbers, number of endpoints in an interface etc.
     // Please refer to msdn documentation for this function for more information.
-    //
-
     status = USBD_ValidateConfigurationDescriptor( ConfigDesc, BufferLength , ValidationLevel , Offset , POOL_TAG );
     if (!(NT_SUCCESS (status)) ){
         return status;
     }
 
-    //
     // TODO: You should validate the correctness of other descriptors which are not taken care by USBD_ValidateConfigurationDescriptor
     // Check that all such descriptors have size >= sizeof(the descriptor they point to)
     // Check for any association between them if required
-    //
 
     return status;
 }
@@ -788,9 +653,7 @@ OsrFxSetPowerPolicy(
         return status;
     }
 
-    //
     // Init wait-wake policy structure.
-    //
     WDF_DEVICE_POWER_POLICY_WAKE_SETTINGS_INIT(&wakeSettings);
 
     status = WdfDeviceAssignSxWakeSettings(Device, &wakeSettings);
@@ -810,20 +673,12 @@ SelectInterfaces(
     _In_ WDFDEVICE Device
     )
 /*++
-
 Routine Description:
-
     This helper routine selects the configuration, interface and
     creates a context for every pipe (end point) in that interface.
 
 Arguments:
-
     Device - Handle to a framework device
-
-Return Value:
-
-    NT status value
-
 --*/
 {
     WDF_USB_DEVICE_SELECT_CONFIG_PARAMS configParams;
@@ -932,18 +787,9 @@ GetDeviceEventLoggingNames(
     _In_ WDFDEVICE Device
     )
 /*++
-
 Routine Description:
-
     Retrieve the friendly name and the location string into WDFMEMORY objects
     and store them in the device context.
-
-Arguments:
-
-Return Value:
-
-    None
-
 --*/
 {
     PDEVICE_CONTEXT pDevContext = GetDeviceContext(Device);
@@ -955,19 +801,13 @@ Return Value:
 
     NTSTATUS status;
 
-    //
     // We want both memory objects to be children of the device so they will
     // be deleted automatically when the device is removed.
-    //
-
     WDF_OBJECT_ATTRIBUTES_INIT(&objectAttributes);
     objectAttributes.ParentObject = Device;
 
-    //
     // First get the length of the string. If the FriendlyName
     // is not there then get the lenght of device description.
-    //
-
     status = WdfDeviceAllocAndQueryProperty(Device,
                                             DevicePropertyFriendlyName,
                                             NonPagedPoolNx,
@@ -994,10 +834,7 @@ Return Value:
         pDevContext->DeviceName = L"(error retrieving name)";
     }
 
-    //
     // Retrieve the device location string.
-    //
-
     status = WdfDeviceAllocAndQueryProperty(Device,
                                             DevicePropertyLocationInformation,
                                             NonPagedPoolNx,
@@ -1046,6 +883,3 @@ DbgDevicePowerString(
         return "UnKnown Device Power State";
     }
 }
-
-
-
