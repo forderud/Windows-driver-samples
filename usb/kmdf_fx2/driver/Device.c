@@ -29,18 +29,6 @@ Environment:
 #include "device.tmh"
 #endif
 
-#ifdef ALLOC_PRAGMA
-#pragma alloc_text(PAGE, OsrFxEvtDeviceAdd)
-#pragma alloc_text(PAGE, OsrFxEvtDevicePrepareHardware)
-#pragma alloc_text(PAGE, OsrFxEvtDeviceD0Exit)
-#pragma alloc_text(PAGE, SelectInterfaces)
-#pragma alloc_text(PAGE, OsrFxSetPowerPolicy)
-#pragma alloc_text(PAGE, OsrFxReadFdoRegistryKeyValue)
-#pragma alloc_text(PAGE, GetDeviceEventLoggingNames)
-#pragma alloc_text(PAGE, OsrFxValidateConfigurationDescriptor)
-#endif
-
-
 NTSTATUS
 OsrFxEvtDeviceAdd(
     WDFDRIVER Driver,
@@ -80,8 +68,6 @@ Return Value:
     DEVPROP_BOOLEAN                     isRestricted;
 
     UNREFERENCED_PARAMETER(Driver);
-
-    PAGED_CODE();
 
     TraceEvents(TRACE_LEVEL_INFORMATION, DBG_PNP,"--> OsrFxEvtDeviceAdd routine\n");
 
@@ -461,7 +447,6 @@ Return Value:
     UNREFERENCED_PARAMETER(ResourceList);
     UNREFERENCED_PARAMETER(ResourceListTranslated);
     waitWakeEnable = FALSE;
-    PAGED_CODE();
 
     TraceEvents(TRACE_LEVEL_INFORMATION, DBG_PNP, "--> EvtDevicePrepareHardware\n");
 
@@ -685,8 +670,6 @@ Return Value:
 {
     PDEVICE_CONTEXT         pDeviceContext;
 
-    PAGED_CODE();
-
     TraceEvents(TRACE_LEVEL_INFORMATION, DBG_POWER,
           "-->OsrFxEvtDeviceD0Exit - moving to %s\n",
           DbgDevicePowerString(TargetState));
@@ -760,8 +743,6 @@ Return Value:
     USBD_STATUS status = USBD_STATUS_SUCCESS;
     USHORT ValidationLevel = 3;
 
-    PAGED_CODE();
-
     //
     // Call USBD_ValidateConfigurationDescriptor to validate the descriptors which are present in this supplied configuration descriptor.
     // USBD_ValidateConfigurationDescriptor validates that all descriptors are completely contained within the configuration descriptor buffer.
@@ -793,8 +774,6 @@ OsrFxSetPowerPolicy(
     WDF_DEVICE_POWER_POLICY_IDLE_SETTINGS idleSettings;
     WDF_DEVICE_POWER_POLICY_WAKE_SETTINGS wakeSettings;
     NTSTATUS    status = STATUS_SUCCESS;
-
-    PAGED_CODE();
 
     //
     // Init the idle policy structure.
@@ -854,8 +833,6 @@ Return Value:
     WDF_USB_PIPE_INFORMATION            pipeInfo;
     UCHAR                               index;
     UCHAR                               numberConfiguredPipes;
-
-    PAGED_CODE();
 
     pDeviceContext = GetDeviceContext(Device);
 
@@ -984,8 +961,6 @@ Return Value:
     WDFMEMORY locationMemory = NULL;
 
     NTSTATUS status;
-
-    PAGED_CODE();
 
     //
     // We want both memory objects to be children of the device so they will
