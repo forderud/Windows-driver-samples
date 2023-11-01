@@ -193,14 +193,14 @@ _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 GetBarGraphState(
     _In_ PDEVICE_CONTEXT DevContext,
-    _Out_ PBAR_GRAPH_STATE BarGraphState
+    _Out_ BAR_GRAPH_STATE* BarGraphState
     );
 
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 SetBarGraphState(
     _In_ PDEVICE_CONTEXT DevContext,
-    _In_ PBAR_GRAPH_STATE BarGraphState
+    _In_ BAR_GRAPH_STATE* BarGraphState
     );
 
 _IRQL_requires_(PASSIVE_LEVEL)
@@ -221,7 +221,7 @@ _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 GetSwitchState(
     _In_ PDEVICE_CONTEXT DevContext,
-    _In_ PSWITCH_STATE SwitchState
+    _In_ SWITCH_STATE* SwitchState
     );
 
 VOID

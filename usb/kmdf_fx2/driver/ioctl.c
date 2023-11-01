@@ -32,8 +32,8 @@ Arguments:
     WDFDEVICE           device;
     PDEVICE_CONTEXT     pDevContext;
     size_t              bytesReturned = 0;
-    PBAR_GRAPH_STATE    barGraphState = NULL;
-    PSWITCH_STATE       switchState = NULL;
+    BAR_GRAPH_STATE*    barGraphState = NULL;
+    SWITCH_STATE*       switchState = NULL;
     PUCHAR              sevenSegment = NULL;
     BOOLEAN             requestPending = FALSE;
     NTSTATUS            status = STATUS_INVALID_DEVICE_REQUEST;
@@ -443,7 +443,7 @@ _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 GetBarGraphState(
     _In_ PDEVICE_CONTEXT DevContext,
-    _Out_ PBAR_GRAPH_STATE BarGraphState
+    _Out_ BAR_GRAPH_STATE* BarGraphState
     )
 /*++
 Routine Description
@@ -516,7 +516,7 @@ _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 SetBarGraphState(
     _In_ PDEVICE_CONTEXT DevContext,
-    _In_ PBAR_GRAPH_STATE BarGraphState
+    _In_ BAR_GRAPH_STATE* BarGraphState
     )
 /*++
 Routine Description
@@ -735,7 +735,7 @@ _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 GetSwitchState(
     _In_ PDEVICE_CONTEXT DevContext,
-    _In_ PSWITCH_STATE SwitchState
+    _In_ SWITCH_STATE* SwitchState
     )
 /*++
 Routine Description
@@ -818,7 +818,7 @@ Arguments:
     WDFREQUEST          request;
     PDEVICE_CONTEXT     pDevContext;
     size_t              bytesReturned = 0;
-    PSWITCH_STATE       switchState = NULL;
+    SWITCH_STATE*       switchState = NULL;
 
     pDevContext = GetDeviceContext(Device);
 
