@@ -847,11 +847,9 @@ Return Value:
                         "WdfUsbTargetDeviceSelectConfig failed %!STATUS! \n",
                         status);
 
-        //
         // Since the Osr USB fx2 device is capable of working at high speed, the only reason
         // the device would not be working at high speed is if the port doesn't
         // support it. If the port doesn't support high speed it is a 1.1 port
-        //
         if ((pDeviceContext->UsbDeviceTraits & WDF_USB_DEVICE_TRAIT_AT_HIGH_SPEED) == 0) {
             GUID activity = DeviceToActivityId(Device);
 
@@ -877,9 +875,7 @@ Return Value:
 
     numberConfiguredPipes = configParams.Types.SingleInterface.NumberConfiguredPipes;
 
-    //
     // Get pipe handles
-    //
     for(index=0; index < numberConfiguredPipes; index++) {
 
         WDF_USB_PIPE_INFORMATION_INIT(&pipeInfo);
@@ -889,10 +885,9 @@ Return Value:
             index, //PipeIndex,
             &pipeInfo
             );
-        //
+
         // Tell the framework that it's okay to read less than
         // MaximumPacketSize
-        //
         WdfUsbTargetPipeSetNoMaximumPacketSizeCheck(pipe);
 
         if(WdfUsbPipeTypeInterrupt == pipeInfo.PipeType) {
@@ -917,9 +912,7 @@ Return Value:
 
     }
 
-    //
     // If we didn't find all the 3 pipes, fail the start.
-    //
     if(!(pDeviceContext->BulkWritePipe
             && pDeviceContext->BulkReadPipe && pDeviceContext->InterruptPipe)) {
         status = STATUS_INVALID_DEVICE_STATE;
