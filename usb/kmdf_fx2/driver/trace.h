@@ -1,26 +1,3 @@
-/*++
-
-Copyright (c) Microsoft Corporation.  All rights reserved.
-
-    THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
-    KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-    IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
-    PURPOSE.
-
-Module Name:
-
-    TRACE.h
-
-Abstract:
-
-    Header file for the debug tracing related function defintions and macros.
-
-Environment:
-
-    Kernel mode
-
---*/
-
 #include <evntrace.h> // For TRACE_LEVEL definitions
 
 #if !defined(EVENT_TRACING)
@@ -70,7 +47,6 @@ TraceEvents    (
 #define WPP_CLEANUP(DriverObject)
 
 #else
-//
 // If software tracing is defined in the sources file..
 // WPP_DEFINE_CONTROL_GUID specifies the GUID used for this driver.
 // *** REPLACE THE GUID WITH YOUR OWN UNIQUE ID ***
@@ -86,7 +62,6 @@ TraceEvents    (
 //    Name of the logger is OSRUSBFX2 and the guid is
 //   {D23A0C5A-D307-4f0e-AE8E-E2A355AD5DAB}
 //   (0xd23a0c5a, 0xd307, 0x4f0e, 0xae, 0x8e, 0xe2, 0xa3, 0x55, 0xad, 0x5d, 0xab);
-//
 
 #define WPP_CHECK_FOR_NULL_STRING  //to prevent exceptions due to NULL strings
 
@@ -104,12 +79,7 @@ TraceEvents    (
    you have to provide another trace control GUID */\
         )
 
-
 #define WPP_LEVEL_FLAGS_LOGGER(lvl,flags) WPP_LEVEL_LOGGER(flags)
 #define WPP_LEVEL_FLAGS_ENABLED(lvl, flags) (WPP_LEVEL_ENABLED(flags) && WPP_CONTROL(WPP_BIT_ ## flags).Level  >= lvl)
 
-
 #endif
-
-
-
