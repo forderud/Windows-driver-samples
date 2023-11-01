@@ -61,11 +61,10 @@
     <ClCompile Include="Interrupt.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="driver.c; device.c; ioctl.c; bulkrwr.c; Interrupt.c" />
-    <ClCompile Include="driver.c; device.c; ioctl.c; bulkrwr.c; Interrupt.c" />
-    <ClCompile Include="driver.c; device.c; ioctl.c; bulkrwr.c; Interrupt.c" />
-    <ClCompile Include="driver.c; device.c; ioctl.c; bulkrwr.c; Interrupt.c" />
-    <ClCompile Include="driver.c; device.c; ioctl.c; bulkrwr.c; Interrupt.c" />
+    <ClCompile Include="device.c" />
+    <ClCompile Include="ioctl.c" />
+    <ClCompile Include="bulkrwr.c" />
+    <ClCompile Include="Interrupt.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="trace.h">
@@ -74,8 +73,6 @@
     <ClInclude Include="trace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="*.h;*.hpp;*.hxx;*.hm;*.inl;*.xsd" />
-    <ClInclude Include="*.h;*.hpp;*.hxx;*.hm;*.inl;*.xsd" />
     <ClInclude Include="..\inc\public.h" />
   </ItemGroup>
   <ItemGroup>
