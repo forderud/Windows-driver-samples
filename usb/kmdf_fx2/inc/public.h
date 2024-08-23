@@ -154,17 +154,6 @@ typedef struct _SWITCH_STATE {
                                                     FILE_READ_ACCESS)
 
 
-#define IOCTL_OSRUSBFX2_GET_7_SEGMENT_DISPLAY CTL_CODE(FILE_DEVICE_OSRUSBFX2, \
-                                                    IOCTL_INDEX + 7, \
-                                                    METHOD_BUFFERED, \
-                                                    FILE_READ_ACCESS)
-
-
-#define IOCTL_OSRUSBFX2_SET_7_SEGMENT_DISPLAY CTL_CODE(FILE_DEVICE_OSRUSBFX2, \
-                                                    IOCTL_INDEX + 8, \
-                                                    METHOD_BUFFERED, \
-                                                    FILE_WRITE_ACCESS)
-
 #define IOCTL_OSRUSBFX2_GET_INTERRUPT_MESSAGE CTL_CODE(FILE_DEVICE_OSRUSBFX2,\
                                                     IOCTL_INDEX + 9, \
                                                     METHOD_OUT_DIRECT, \
