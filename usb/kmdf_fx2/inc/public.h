@@ -45,38 +45,6 @@ DEFINE_GUID(GUID_DEVINTERFACE_OSRUSBFX2,
 //  OSRFX2 Development Board
 //
 #include <pshpack1.h>
-typedef struct _BAR_GRAPH_STATE {
-
-    union {
- 
-        struct {
-            //
-            // Individual bars starting from the 
-            //  top of the stack of bars 
-            //
-            // NOTE: There are actually 10 bars, 
-            //  but the very top two do not light
-            //  and are not counted here
-            //
-            UCHAR Bar1 : 1;
-            UCHAR Bar2 : 1;
-            UCHAR Bar3 : 1;
-            UCHAR Bar4 : 1;
-            UCHAR Bar5 : 1;
-            UCHAR Bar6 : 1;
-            UCHAR Bar7 : 1;
-            UCHAR Bar8 : 1;
-        };
-
-        //
-        // The state of all the bar graph as a single
-        // UCHAR
-        //
-        UCHAR BarsAsUChar;
-
-    };
-
-}BAR_GRAPH_STATE, *PBAR_GRAPH_STATE;
 
 //
 // SWITCH_STATE
@@ -135,18 +103,6 @@ typedef struct _SWITCH_STATE {
                                                     IOCTL_INDEX  + 3,  \
                                                     METHOD_BUFFERED, \
                                                     FILE_WRITE_ACCESS)
-
-#define IOCTL_OSRUSBFX2_GET_BAR_GRAPH_DISPLAY CTL_CODE(FILE_DEVICE_OSRUSBFX2,\
-                                                    IOCTL_INDEX  + 4, \
-                                                    METHOD_BUFFERED, \
-                                                    FILE_READ_ACCESS)
-
-
-#define IOCTL_OSRUSBFX2_SET_BAR_GRAPH_DISPLAY CTL_CODE(FILE_DEVICE_OSRUSBFX2,\
-                                                    IOCTL_INDEX + 5, \
-                                                    METHOD_BUFFERED, \
-                                                    FILE_WRITE_ACCESS)
-
 
 #define IOCTL_OSRUSBFX2_READ_SWITCHES   CTL_CODE(FILE_DEVICE_OSRUSBFX2, \
                                                     IOCTL_INDEX + 6, \

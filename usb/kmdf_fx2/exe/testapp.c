@@ -70,12 +70,7 @@ DumpUsbConfig( // defined in dump.c
     );
 
 typedef enum _INPUT_FUNCTION {
-    LIGHT_ONE_BAR = 1,
-    CLEAR_ONE_BAR,
-    LIGHT_ALL_BARS,
-    CLEAR_ALL_BARS,
-    GET_BAR_GRAPH_LIGHT_STATE,
-    GET_SWITCH_STATE,
+    GET_SWITCH_STATE = 1,
     GET_SWITCH_STATE_AS_INTERRUPT_MESSAGE,
     RESET_DEVICE,
     REENUMERATE_DEVICE,
@@ -431,8 +426,6 @@ PlayWithDevice()
     DWORD           code;
     ULONG           index;
     INPUT_FUNCTION  function;
-    BAR_GRAPH_STATE barGraphState;
-    ULONG           bar;
     SWITCH_STATE    switchState;
     BOOL            result = FALSE;
 
@@ -453,15 +446,10 @@ PlayWithDevice()
     WHILE(TRUE)  {
 
         printf ("\nUSBFX TEST -- Functions:\n\n");
-        printf ("\t1.  Light Bar\n");
-        printf ("\t2.  Clear Bar\n");
-        printf ("\t3.  Light entire Bar graph\n");
-        printf ("\t4.  Clear entire Bar graph\n");
-        printf ("\t5.  Get bar graph state\n");
-        printf ("\t6.  Get Switch state\n");
-        printf ("\t7.  Get Switch Interrupt Message\n");
-        printf ("\t8. Reset the device\n");
-        printf ("\t9. Reenumerate the device\n");
+        printf ("\t1.  Get Switch state\n");
+        printf ("\t2.  Get Switch Interrupt Message\n");
+        printf ("\t3. Reset the device\n");
+        printf ("\t4. Reenumerate the device\n");
         printf ("\n\t0. Exit\n");
         printf ("\n\tSelection: ");
 
@@ -473,187 +461,6 @@ PlayWithDevice()
         }
 
         switch(function)  {
-
-        case LIGHT_ONE_BAR:
-
-        printf("Which Bar (input number 1 thru 8)?\n");
-        if (scanf_s ("%d", &bar) <= 0) {
-
-            printf("Error reading input!\n");
-            goto Error;
-
-        }
-
-        if(bar == 0 || bar > 8){
-            printf("Invalid bar number!\n");
-            goto Error;
-        }
-
-        bar--; // normalize to 0 to 7
-
-        barGraphState.BarsAsUChar = 1 << (UCHAR)bar;
-
-        if (!DeviceIoControl(deviceHandle,
-                             IOCTL_OSRUSBFX2_SET_BAR_GRAPH_DISPLAY,
-                             &barGraphState,           // Ptr to InBuffer
-                             sizeof(BAR_GRAPH_STATE),  // Length of InBuffer
-                             NULL,         // Ptr to OutBuffer
-                             0,            // Length of OutBuffer
-                             &index,       // BytesReturned
-                             0)) {         // Ptr to Overlapped structure
-
-            code = GetLastError();
-
-            printf("DeviceIoControl failed with error 0x%x\n", code);
-
-            goto Error;
-        }
-
-        break;
-
-        case CLEAR_ONE_BAR:
-
-
-        printf("Which Bar (input number 1 thru 8)?\n");
-        if (scanf_s ("%d", &bar) <= 0) {
-
-            printf("Error reading input!\n");
-            goto Error;
-
-        }
-
-        if(bar == 0 || bar > 8){
-            printf("Invalid bar number!\n");
-            goto Error;
-        }
-
-        bar--;
-
-        //
-        // Read the current state
-        //
-        if (!DeviceIoControl(deviceHandle,
-                             IOCTL_OSRUSBFX2_GET_BAR_GRAPH_DISPLAY,
-                             NULL,             // Ptr to InBuffer
-                             0,            // Length of InBuffer
-                             &barGraphState,           // Ptr to OutBuffer
-                             sizeof(BAR_GRAPH_STATE),  // Length of OutBuffer
-                             &index,        // BytesReturned
-                             0)) {         // Ptr to Overlapped structure
-
-            code = GetLastError();
-
-            printf("DeviceIoControl failed with error 0x%x\n", code);
-
-            goto Error;
-        }
-
-        if (barGraphState.BarsAsUChar & (1 << bar)) {
-
-            printf("Bar is set...Clearing it\n");
-            barGraphState.BarsAsUChar &= ~(1 << bar);
-
-            if (!DeviceIoControl(deviceHandle,
-                                 IOCTL_OSRUSBFX2_SET_BAR_GRAPH_DISPLAY,
-                                 &barGraphState,         // Ptr to InBuffer
-                                 sizeof(BAR_GRAPH_STATE), // Length of InBuffer
-                                 NULL,             // Ptr to OutBuffer
-                                 0,            // Length of OutBuffer
-                                 &index,        // BytesReturned
-                                 0)) {          // Ptr to Overlapped structure
-
-                code = GetLastError();
-
-                printf("DeviceIoControl failed with error 0x%x\n", code);
-
-                goto Error;
-
-            }
-
-        } else {
-
-            printf("Bar not set.\n");
-
-        }
-
-        break;
-
-        case LIGHT_ALL_BARS:
-
-        barGraphState.BarsAsUChar = 0xFF;
-
-        if (!DeviceIoControl(deviceHandle,
-                             IOCTL_OSRUSBFX2_SET_BAR_GRAPH_DISPLAY,
-                             &barGraphState,         // Ptr to InBuffer
-                             sizeof(BAR_GRAPH_STATE),   // Length of InBuffer
-                             NULL,         // Ptr to OutBuffer
-                             0,            // Length of OutBuffer
-                             &index,       // BytesReturned
-                             0)) {          // Ptr to Overlapped structure
-
-            code = GetLastError();
-
-            printf("DeviceIoControl failed with error 0x%x\n", code);
-
-            goto Error;
-        }
-
-        break;
-
-        case CLEAR_ALL_BARS:
-
-        barGraphState.BarsAsUChar = 0;
-
-        if (!DeviceIoControl(deviceHandle,
-                             IOCTL_OSRUSBFX2_SET_BAR_GRAPH_DISPLAY,
-                             &barGraphState,                 // Ptr to InBuffer
-                             sizeof(BAR_GRAPH_STATE),         // Length of InBuffer
-                             NULL,             // Ptr to OutBuffer
-                             0,            // Length of OutBuffer
-                             &index,         // BytesReturned
-                             0)) {        // Ptr to Overlapped structure
-
-            code = GetLastError();
-
-            printf("DeviceIoControl failed with error 0x%x\n", code);
-
-            goto Error;
-        }
-
-        break;
-
-
-        case GET_BAR_GRAPH_LIGHT_STATE:
-
-        barGraphState.BarsAsUChar = 0;
-
-        if (!DeviceIoControl(deviceHandle,
-                             IOCTL_OSRUSBFX2_GET_BAR_GRAPH_DISPLAY,
-                             NULL,             // Ptr to InBuffer
-                             0,            // Length of InBuffer
-                             &barGraphState,          // Ptr to OutBuffer
-                             sizeof(BAR_GRAPH_STATE), // Length of OutBuffer
-                             &index,                  // BytesReturned
-                             0)) {                   // Ptr to Overlapped structure
-
-            code = GetLastError();
-
-            printf("DeviceIoControl failed with error 0x%x\n", code);
-
-            goto Error;
-        }
-
-        printf("Bar Graph: \n");
-        printf("    Bar8 is %s\n", barGraphState.Bar8 ? "ON" : "OFF");
-        printf("    Bar7 is %s\n", barGraphState.Bar7 ? "ON" : "OFF");
-        printf("    Bar6 is %s\n", barGraphState.Bar6 ? "ON" : "OFF");
-        printf("    Bar5 is %s\n", barGraphState.Bar5 ? "ON" : "OFF");
-        printf("    Bar4 is %s\n", barGraphState.Bar4 ? "ON" : "OFF");
-        printf("    Bar3 is %s\n", barGraphState.Bar3 ? "ON" : "OFF");
-        printf("    Bar2 is %s\n", barGraphState.Bar2 ? "ON" : "OFF");
-        printf("    Bar1 is %s\n", barGraphState.Bar1 ? "ON" : "OFF");
-
-        break;
 
         case GET_SWITCH_STATE:
 
