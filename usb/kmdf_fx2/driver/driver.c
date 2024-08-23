@@ -68,7 +68,6 @@ PFN_IO_SET_DEVICE_INTERFACE_PROPERTY_DATA g_pIoSetDeviceInterfacePropertyData;
 
 #ifdef ALLOC_PRAGMA
 #pragma alloc_text(INIT, DriverEntry)
-#pragma alloc_text(PAGE, OsrFxEvtDriverContextCleanup)
 #endif
 
 NTSTATUS
@@ -211,8 +210,6 @@ Return Value:
     // EvtCleanupCallback for WDFDRIVER is always called at PASSIVE_LEVEL
     //
     _IRQL_limited_to_(PASSIVE_LEVEL);
-
-    PAGED_CODE ();
 
     TraceEvents(TRACE_LEVEL_INFORMATION, DBG_INIT,
                     "--> OsrFxEvtDriverContextCleanup\n");

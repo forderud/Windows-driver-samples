@@ -27,16 +27,6 @@ Environment:
 #include "ioctl.tmh"
 #endif
 
-#pragma alloc_text(PAGE, OsrFxEvtIoDeviceControl)
-#pragma alloc_text(PAGE, ResetPipe)
-#pragma alloc_text(PAGE, ResetDevice)
-#pragma alloc_text(PAGE, ReenumerateDevice)
-#pragma alloc_text(PAGE, GetBarGraphState)
-#pragma alloc_text(PAGE, SetBarGraphState)
-#pragma alloc_text(PAGE, GetSevenSegmentState)
-#pragma alloc_text(PAGE, SetSevenSegmentState)
-#pragma alloc_text(PAGE, GetSwitchState)
-
 VOID
 OsrFxEvtIoDeviceControl(
     _In_ WDFQUEUE   Queue,
@@ -88,8 +78,6 @@ Return Value:
     // at IRQL = PASSIVE_LEVEL.
     //
     _IRQL_limited_to_(PASSIVE_LEVEL);
-
-    PAGED_CODE();
 
     TraceEvents(TRACE_LEVEL_INFORMATION, DBG_IOCTL, "--> OsrFxEvtIoDeviceControl\n");
     //
@@ -362,8 +350,6 @@ Return Value:
 {
     NTSTATUS          status;
 
-    PAGED_CODE();
-
     //
     //  This routine synchronously submits a URB_FUNCTION_RESET_PIPE
     // request down the stack.
@@ -447,8 +433,6 @@ Return Value:
     PDEVICE_CONTEXT pDeviceContext;
     NTSTATUS status;
 
-    PAGED_CODE();
-
     TraceEvents(TRACE_LEVEL_INFORMATION, DBG_IOCTL, "--> ResetDevice\n");
 
     pDeviceContext = GetDeviceContext(Device);
@@ -505,8 +489,6 @@ Return Value:
     WDF_USB_CONTROL_SETUP_PACKET    controlSetupPacket;
     WDF_REQUEST_SEND_OPTIONS        sendOptions;
     GUID                            activity;
-
-    PAGED_CODE();
 
     TraceEvents(TRACE_LEVEL_VERBOSE, DBG_IOCTL,"--> ReenumerateDevice\n");
 
@@ -586,8 +568,6 @@ Return Value:
     WDF_REQUEST_SEND_OPTIONS        sendOptions;
     WDF_MEMORY_DESCRIPTOR memDesc;
     ULONG    bytesTransferred;
-
-    PAGED_CODE();
 
     TraceEvents(TRACE_LEVEL_VERBOSE, DBG_IOCTL, "--> GetBarGraphState\n");
 
@@ -672,8 +652,6 @@ Return Value:
     WDF_REQUEST_SEND_OPTIONS        sendOptions;
     WDF_MEMORY_DESCRIPTOR memDesc;
     ULONG    bytesTransferred;
-
-    PAGED_CODE();
 
     TraceEvents(TRACE_LEVEL_VERBOSE, DBG_IOCTL, "--> SetBarGraphState\n");
 
@@ -764,8 +742,6 @@ Return Value:
 
     TraceEvents(TRACE_LEVEL_VERBOSE, DBG_IOCTL, "GetSetSevenSegmentState: Enter\n");
 
-    PAGED_CODE();
-
     WDF_REQUEST_SEND_OPTIONS_INIT(
                                   &sendOptions,
                                   WDF_REQUEST_SEND_OPTION_TIMEOUT
@@ -846,8 +822,6 @@ Return Value:
     WDF_MEMORY_DESCRIPTOR memDesc;
     ULONG    bytesTransferred;
 
-    PAGED_CODE();
-
     TraceEvents(TRACE_LEVEL_VERBOSE, DBG_IOCTL, "--> SetSevenSegmentState\n");
 
     WDF_REQUEST_SEND_OPTIONS_INIT(
@@ -926,8 +900,6 @@ Return Value:
     ULONG    bytesTransferred;
 
     TraceEvents(TRACE_LEVEL_VERBOSE, DBG_IOCTL, "--> GetSwitchState\n");
-
-    PAGED_CODE();
 
     WDF_REQUEST_SEND_OPTIONS_INIT(
                                   &sendOptions,
