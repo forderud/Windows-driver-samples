@@ -88,8 +88,6 @@ typedef struct _DEVICE_CONTEXT {
 
     WDFUSBINTERFACE                 UsbInterface;
 
-    WDFUSBPIPE                      BulkReadPipe;
-
     WDFUSBPIPE                      InterruptPipe;
 
     WDFWAITLOCK                     ResetDeviceWaitLock;
@@ -242,8 +240,6 @@ OsrFxConfigContReaderForInterruptEndPoint(
 EVT_WDF_USB_READER_COMPLETION_ROUTINE OsrFxEvtUsbInterruptPipeReadComplete;
 
 EVT_WDF_USB_READERS_FAILED OsrFxEvtUsbInterruptReadersFailed;
-
-EVT_WDF_IO_QUEUE_IO_STOP OsrFxEvtIoStop;
 
 EVT_WDF_DEVICE_D0_ENTRY OsrFxEvtDeviceD0Entry;
 
