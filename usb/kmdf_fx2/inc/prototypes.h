@@ -7,6 +7,5 @@ EVT_WDF_DEVICE_PREPARE_HARDWARE EvtDevicePrepareHardware;
 
 EVT_WDF_IO_QUEUE_IO_DEVICE_CONTROL EvtIoDeviceControl;
 
-EVT_WDF_REQUEST_COMPLETION_ROUTINE EvtRequestReadCompletionRoutine;
 EVT_WDF_REQUEST_COMPLETION_ROUTINE EvtRequestWriteCompletionRoutine;
 
