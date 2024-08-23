@@ -93,11 +93,6 @@ typedef struct _SWITCH_STATE {
                                                      IOCTL_INDEX,     \
                                                      METHOD_BUFFERED,         \
                                                      FILE_READ_ACCESS)
-                                                   
-#define IOCTL_OSRUSBFX2_RESET_DEVICE  CTL_CODE(FILE_DEVICE_OSRUSBFX2,     \
-                                                     IOCTL_INDEX + 1, \
-                                                     METHOD_BUFFERED,         \
-                                                     FILE_WRITE_ACCESS)
 
 #define IOCTL_OSRUSBFX2_READ_SWITCHES   CTL_CODE(FILE_DEVICE_OSRUSBFX2, \
                                                     IOCTL_INDEX + 6, \
