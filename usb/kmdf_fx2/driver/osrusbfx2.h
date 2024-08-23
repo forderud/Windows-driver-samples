@@ -56,8 +56,6 @@ extern const __declspec(selectany) LONGLONG DEFAULT_CONTROL_TRANSFER_TIMEOUT = 5
 // Define the vendor commands supported by our device
 //
 #define USBFX2LK_READ_SWITCHES              0xD6
-#define USBFX2LK_READ_BARGRAPH_DISPLAY      0xD7
-#define USBFX2LK_SET_BARGRAPH_DISPLAY       0xD8
 #define USBFX2LK_IS_HIGH_SPEED              0xD9
 #define USBFX2LK_REENUMERATE                0xDA
 
@@ -176,20 +174,6 @@ _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 ReenumerateDevice(
     _In_ PDEVICE_CONTEXT DevContext
-    );
-
-_IRQL_requires_(PASSIVE_LEVEL)
-NTSTATUS
-GetBarGraphState(
-    _In_ PDEVICE_CONTEXT DevContext,
-    _Out_ PBAR_GRAPH_STATE BarGraphState
-    );
-
-_IRQL_requires_(PASSIVE_LEVEL)
-NTSTATUS
-SetBarGraphState(
-    _In_ PDEVICE_CONTEXT DevContext,
-    _In_ PBAR_GRAPH_STATE BarGraphState
     );
 
 _IRQL_requires_(PASSIVE_LEVEL)
