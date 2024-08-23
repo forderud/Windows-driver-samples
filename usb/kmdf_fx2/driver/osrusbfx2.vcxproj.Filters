@@ -19,9 +19,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="bulkrwr.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="device.c">
       <Filter>Source Files</Filter>
     </ClCompile>
