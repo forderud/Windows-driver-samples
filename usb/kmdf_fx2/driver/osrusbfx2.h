@@ -90,8 +90,6 @@ typedef struct _DEVICE_CONTEXT {
 
     WDFUSBPIPE                      BulkReadPipe;
 
-    WDFUSBPIPE                      BulkWritePipe;
-
     WDFUSBPIPE                      InterruptPipe;
 
     WDFWAITLOCK                     ResetDeviceWaitLock;
@@ -157,7 +155,6 @@ EVT_WDF_DEVICE_PREPARE_HARDWARE OsrFxEvtDevicePrepareHardware;
 
 EVT_WDF_IO_QUEUE_IO_READ OsrFxEvtIoRead;
 
-EVT_WDF_IO_QUEUE_IO_WRITE OsrFxEvtIoWrite;
 
 EVT_WDF_IO_QUEUE_IO_DEVICE_CONTROL OsrFxEvtIoDeviceControl;
 

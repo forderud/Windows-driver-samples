@@ -221,40 +221,6 @@ Return Value:
 
 
     //
-    // We will create another sequential queue and configure it
-    // to receive write requests.
-    //
-    WDF_IO_QUEUE_CONFIG_INIT(&ioQueueConfig, WdfIoQueueDispatchSequential);
-
-    ioQueueConfig.EvtIoWrite = OsrFxEvtIoWrite;
-    ioQueueConfig.EvtIoStop  = OsrFxEvtIoStop;
-
-    status = WdfIoQueueCreate(
-                 device,
-                 &ioQueueConfig,
-                 WDF_NO_OBJECT_ATTRIBUTES,
-                 &queue // queue handle
-             );
-
-    if (!NT_SUCCESS (status)) {
-        TraceEvents(TRACE_LEVEL_ERROR, DBG_PNP,
-            "WdfIoQueueCreate failed 0x%x\n", status);
-        goto Error;
-    }
-
-     status = WdfDeviceConfigureRequestDispatching(
-                    device,
-                    queue,
-                    WdfRequestTypeWrite);
-
-    if(!NT_SUCCESS (status)){
-        NT_ASSERT(NT_SUCCESS(status));
-        TraceEvents(TRACE_LEVEL_ERROR, DBG_PNP,
-                    "WdfDeviceConfigureRequestDispatching failed 0x%x\n", status);
-        goto Error;
-    }
-
-    //
     // Register a manual I/O queue for handling Interrupt Message Read Requests.
     // This queue will be used for storing Requests that need to wait for an
     // interrupt to occur before they can be completed.
@@ -908,21 +874,12 @@ Return Value:
                     "BulkInput Pipe is 0x%p\n", pipe);
             pDeviceContext->BulkReadPipe = pipe;
         }
-
-        if(WdfUsbPipeTypeBulk == pipeInfo.PipeType &&
-                WdfUsbTargetPipeIsOutEndpoint(pipe)) {
-            TraceEvents(TRACE_LEVEL_INFORMATION, DBG_IOCTL,
-                    "BulkOutput Pipe is 0x%p\n", pipe);
-            pDeviceContext->BulkWritePipe = pipe;
-        }
-
     }
 
     //
     // If we didn't find all the 3 pipes, fail the start.
     //
-    if(!(pDeviceContext->BulkWritePipe
-            && pDeviceContext->BulkReadPipe && pDeviceContext->InterruptPipe)) {
+    if(!(pDeviceContext->BulkReadPipe && pDeviceContext->InterruptPipe)) {
         status = STATUS_INVALID_DEVICE_STATE;
         TraceEvents(TRACE_LEVEL_ERROR, DBG_PNP,
                             "Device is not configured properly %!STATUS!\n",
