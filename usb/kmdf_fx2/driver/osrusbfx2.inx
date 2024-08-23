@@ -67,7 +67,7 @@ CopyFiles=osrusbfx2.Files.Ext
 AddService = , %SPSVCINST_ASSOCSERVICE%, 
 
 [osrusbfx2.Dev.NT.Services]
-AddService = osrusbfx2, %SPSVCINST_ASSOCSERVICE%, osrusbfx2.AddService
+AddService = osrusbfx2B, %SPSVCINST_ASSOCSERVICE%, osrusbfx2.AddService
 
 [osrusbfx2.AddService]
 DisplayName    = %osrusbfx2.SvcDesc%
@@ -97,7 +97,7 @@ osrusbfx2.sys
 
 
 [osrusbfx2.Dev.NT.Wdf]
-KmdfService = osrusbfx2, osrusbfx2_wdfsect
+KmdfService = osrusbfx2B, osrusbfx2_wdfsect
 
 [osrusbfx2_wdfsect]
 KmdfLibraryVersion = $KMDFVERSION$
