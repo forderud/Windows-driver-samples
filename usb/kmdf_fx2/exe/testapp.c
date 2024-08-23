@@ -77,8 +77,6 @@ typedef enum _INPUT_FUNCTION {
     GET_BAR_GRAPH_LIGHT_STATE,
     GET_SWITCH_STATE,
     GET_SWITCH_STATE_AS_INTERRUPT_MESSAGE,
-    GET_7_SEGEMENT_STATE,
-    SET_7_SEGEMENT_STATE,
     RESET_DEVICE,
     REENUMERATE_DEVICE,
 } INPUT_FUNCTION;
@@ -436,8 +434,6 @@ PlayWithDevice()
     BAR_GRAPH_STATE barGraphState;
     ULONG           bar;
     SWITCH_STATE    switchState;
-    UCHAR           sevenSegment = 0;
-    UCHAR           i;
     BOOL            result = FALSE;
 
     deviceHandle = OpenDevice(FALSE);
@@ -464,10 +460,8 @@ PlayWithDevice()
         printf ("\t5.  Get bar graph state\n");
         printf ("\t6.  Get Switch state\n");
         printf ("\t7.  Get Switch Interrupt Message\n");
-        printf ("\t8.  Get 7 segment state\n");
-        printf ("\t9.  Set 7 segment state\n");
-        printf ("\t10. Reset the device\n");
-        printf ("\t11. Reenumerate the device\n");
+        printf ("\t8. Reset the device\n");
+        printf ("\t9. Reenumerate the device\n");
         printf ("\n\t0. Exit\n");
         printf ("\n\tSelection: ");
 
@@ -723,59 +717,6 @@ PlayWithDevice()
         printf("    Switch2 is %s\n", switchState.Switch2 ? "ON" : "OFF");
         printf("    Switch1 is %s\n", switchState.Switch1 ? "ON" : "OFF");
 
-        break;
-
-        case GET_7_SEGEMENT_STATE:
-
-        sevenSegment = 0;
-
-        if (!DeviceIoControl(deviceHandle,
-                             IOCTL_OSRUSBFX2_GET_7_SEGMENT_DISPLAY,
-                             NULL,             // Ptr to InBuffer
-                             0,            // Length of InBuffer
-                             &sevenSegment,                 // Ptr to OutBuffer
-                             sizeof(UCHAR),         // Length of OutBuffer
-                             &index,                     // BytesReturned
-                             0)) {                       // Ptr to Overlapped structure
-
-            code = GetLastError();
-
-            printf("DeviceIoControl failed with error 0x%x\n", code);
-
-            goto Error;
-        }
-
-        printf("7 Segment mask:  0x%x\n", sevenSegment);
-        break;
-
-        case SET_7_SEGEMENT_STATE:
-
-        for (i = 0; i < 8; i++) {
-
-            sevenSegment = 1 << i;
-
-            if (!DeviceIoControl(deviceHandle,
-                                 IOCTL_OSRUSBFX2_SET_7_SEGMENT_DISPLAY,
-                                 &sevenSegment,   // Ptr to InBuffer
-                                 sizeof(UCHAR),  // Length of InBuffer
-                                 NULL,           // Ptr to OutBuffer
-                                 0,         // Length of OutBuffer
-                                 &index,         // BytesReturned
-                                 0)) {           // Ptr to Overlapped structure
-
-                code = GetLastError();
-
-                printf("DeviceIoControl failed with error 0x%x\n", code);
-
-                goto Error;
-            }
-
-            printf("This is %d\n", i);
-            Sleep(500);
-
-        }
-
-        printf("7 Segment mask:  0x%x\n", sevenSegment);
         break;
 
         case RESET_DEVICE:
