@@ -57,7 +57,6 @@ extern const __declspec(selectany) LONGLONG DEFAULT_CONTROL_TRANSFER_TIMEOUT = 5
 //
 #define USBFX2LK_READ_SWITCHES              0xD6
 #define USBFX2LK_IS_HIGH_SPEED              0xD9
-#define USBFX2LK_REENUMERATE                0xDA
 
 //
 // Define the features that we can clear
@@ -168,12 +167,6 @@ _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
 SelectInterfaces(
     _In_ WDFDEVICE Device
-    );
-
-_IRQL_requires_(PASSIVE_LEVEL)
-NTSTATUS
-ReenumerateDevice(
-    _In_ PDEVICE_CONTEXT DevContext
     );
 
 _IRQL_requires_(PASSIVE_LEVEL)
