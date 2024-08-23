@@ -377,8 +377,6 @@ StopAllPipes(
 {
     WdfIoTargetStop(WdfUsbTargetPipeGetIoTarget(DeviceContext->InterruptPipe),
                                  WdfIoTargetCancelSentIo);
-    WdfIoTargetStop(WdfUsbTargetPipeGetIoTarget(DeviceContext->BulkReadPipe),
-                                 WdfIoTargetCancelSentIo);
 }
 
 NTSTATUS
@@ -389,11 +387,6 @@ StartAllPipes(
     NTSTATUS status;
 
     status = WdfIoTargetStart(WdfUsbTargetPipeGetIoTarget(DeviceContext->InterruptPipe));
-    if (!NT_SUCCESS(status)) {
-        return status;
-    }
-
-    status = WdfIoTargetStart(WdfUsbTargetPipeGetIoTarget(DeviceContext->BulkReadPipe));
     if (!NT_SUCCESS(status)) {
         return status;
     }
