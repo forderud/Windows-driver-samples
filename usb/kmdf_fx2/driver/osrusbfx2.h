@@ -216,15 +216,6 @@ DbgDevicePowerString(
     _In_ WDF_POWER_DEVICE_STATE Type
     );
 
-
-_IRQL_requires_(PASSIVE_LEVEL)
-USBD_STATUS
-OsrFxValidateConfigurationDescriptor(  
-    _In_reads_bytes_(BufferLength) PUSB_CONFIGURATION_DESCRIPTOR ConfigDesc,
-    _In_ ULONG BufferLength,
-    _Inout_ PUCHAR *Offset
-    );
-
 FORCEINLINE
 GUID
 RequestToActivityId(

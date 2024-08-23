@@ -395,12 +395,6 @@ Return Value:
                  "WdfUsbTargetDeviceCreateWithParameters failed with Status code %!STATUS!\n", status);
             return status;
         }
-
-        //
-        // TODO: If you are fetching configuration descriptor from device for
-        // selecting a configuration or to parse other descriptors, call OsrFxValidateConfigurationDescriptor
-        // to do basic validation on the descriptors before you access them .
-        //
     }
 
     //
@@ -624,62 +618,6 @@ Return Value:
     // requests
     OsrUsbIoctlGetInterruptMessage(Device, STATUS_DEVICE_REMOVED);
 }
-
-_IRQL_requires_(PASSIVE_LEVEL)
-USBD_STATUS
-OsrFxValidateConfigurationDescriptor(
-    _In_reads_bytes_(BufferLength) PUSB_CONFIGURATION_DESCRIPTOR ConfigDesc,
-    _In_ ULONG BufferLength,
-    _Inout_ PUCHAR *Offset
-    )
-/*++
-
-Routine Description:
-
-    Validates a USB Configuration Descriptor
-
-Parameters:
-
-    ConfigDesc: Pointer to the entire USB Configuration descriptor returned by the device
-
-    BufferLength: Known size of buffer pointed to by ConfigDesc (Not wTotalLength)
-
-    Offset: if the USBD_STATUS returned is not USBD_STATUS_SUCCESS, offet will
-        be set to the address within the ConfigDesc buffer where the failure occured.
-
-Return Value:
-
-    USBD_STATUS
-    Success implies the configuration descriptor is valid.
-
---*/
-{
-
-
-    USBD_STATUS status = USBD_STATUS_SUCCESS;
-    USHORT ValidationLevel = 3;
-
-    //
-    // Call USBD_ValidateConfigurationDescriptor to validate the descriptors which are present in this supplied configuration descriptor.
-    // USBD_ValidateConfigurationDescriptor validates that all descriptors are completely contained within the configuration descriptor buffer.
-    // It also checks for interface numbers, number of endpoints in an interface etc.
-    // Please refer to msdn documentation for this function for more information.
-    //
-
-    status = USBD_ValidateConfigurationDescriptor( ConfigDesc, BufferLength , ValidationLevel , Offset , POOL_TAG );
-    if (!(NT_SUCCESS (status)) ){
-        return status;
-    }
-
-    //
-    // TODO: You should validate the correctness of other descriptors which are not taken care by USBD_ValidateConfigurationDescriptor
-    // Check that all such descriptors have size >= sizeof(the descriptor they point to)
-    // Check for any association between them if required
-    //
-
-    return status;
-}
-
 
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS
