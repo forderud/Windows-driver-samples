@@ -21,8 +21,8 @@
 
 [Version]
 Signature="$WINDOWS NT$"
-Class=Sample
-ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171}
+Class=Sample2
+ClassGuid={ABC71F6A-F254-42CB-B8DA-2D620E70683F}
 Provider=%ProviderName%
 DriverVer=03/20/2003,5.0.3788.0
 CatalogFile=KmdfSamples.cat
