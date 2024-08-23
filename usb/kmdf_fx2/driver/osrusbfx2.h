@@ -85,8 +85,6 @@ typedef struct _DEVICE_CONTEXT {
 
     WDFUSBPIPE                      InterruptPipe;
 
-    WDFWAITLOCK                     ResetDeviceWaitLock;
-
     UCHAR                           CurrentSwitchState;
 
     WDFQUEUE                        InterruptMsgQueue;
@@ -150,18 +148,6 @@ EVT_WDF_IO_QUEUE_IO_READ OsrFxEvtIoRead;
 
 
 EVT_WDF_IO_QUEUE_IO_DEVICE_CONTROL OsrFxEvtIoDeviceControl;
-
-_IRQL_requires_(PASSIVE_LEVEL)
-NTSTATUS
-ResetPipe(
-    _In_ WDFUSBPIPE             Pipe
-    );
-
-_IRQL_requires_(PASSIVE_LEVEL)
-NTSTATUS
-ResetDevice(
-    _In_ WDFDEVICE Device
-    );
 
 _IRQL_requires_(PASSIVE_LEVEL)
 NTSTATUS

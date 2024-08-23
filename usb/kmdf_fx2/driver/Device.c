@@ -226,21 +226,6 @@ Return Value:
     }
 
     //
-    // Create the lock that we use to serialize calls to ResetDevice(). As an
-    // alternative to using a WDFWAITLOCK to serialize the calls, a sequential
-    // WDFQUEUE can be created and reset IOCTLs would be forwarded to it.
-    //
-    WDF_OBJECT_ATTRIBUTES_INIT(&attributes);
-    attributes.ParentObject = device;
-
-    status = WdfWaitLockCreate(&attributes, &pDevContext->ResetDeviceWaitLock);
-    if (!NT_SUCCESS(status)) {
-        TraceEvents(TRACE_LEVEL_ERROR, DBG_PNP,
-                 "WdfWaitLockCreate failed  %!STATUS!\n", status);
-        goto Error;
-    }
-
-    //
     // Get the string for the device interface and set the restricted
     // property on it to allow applications bound with device metadata
     // to access the interface.
