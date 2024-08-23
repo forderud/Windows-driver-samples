@@ -73,7 +73,6 @@ typedef enum _INPUT_FUNCTION {
     GET_SWITCH_STATE = 1,
     GET_SWITCH_STATE_AS_INTERRUPT_MESSAGE,
     RESET_DEVICE,
-    REENUMERATE_DEVICE,
 } INPUT_FUNCTION;
 
 _Success_(return)
@@ -449,7 +448,6 @@ PlayWithDevice()
         printf ("\t1.  Get Switch state\n");
         printf ("\t2.  Get Switch Interrupt Message\n");
         printf ("\t3. Reset the device\n");
-        printf ("\t4. Reenumerate the device\n");
         printf ("\n\t0. Exit\n");
         printf ("\n\tSelection: ");
 
@@ -547,26 +545,6 @@ PlayWithDevice()
         }
 
         break;
-
-        case REENUMERATE_DEVICE:
-
-        printf("Re-enumerate the device\n");
-
-        if (!DeviceIoControl(deviceHandle,
-                             IOCTL_OSRUSBFX2_REENUMERATE_DEVICE,
-                             NULL,             // Ptr to InBuffer
-                             0,            // Length of InBuffer
-                             NULL,                 // Ptr to OutBuffer
-                             0,         // Length of OutBuffer
-                             &index,   // BytesReturned
-                             NULL)) {        // Ptr to Overlapped structure
-
-            code = GetLastError();
-
-            printf("DeviceIoControl failed with error 0x%x\n", code);
-
-            goto Error;
-        }
 
         //
         // Close the handle to the device and exit out so that
