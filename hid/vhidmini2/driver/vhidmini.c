@@ -212,7 +212,7 @@ Return Value:
     // ReadDescriptorFromRegistry(). Otherwise, we will use the
     // hard-coded default report descriptor.
     //
-
+#if 0
     status = CheckRegistryForDescriptor(device);
     if (NT_SUCCESS(status)){
         //
@@ -223,6 +223,8 @@ Return Value:
             KdPrint(("Failed to read descriptor from registry\n"));
         }
     }
+#endif
+    status = -1;
 
     //
     // We will use hard-coded report descriptor if registry one is not used.
