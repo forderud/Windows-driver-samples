@@ -40,7 +40,7 @@ vhidmini.sys=1
 %ManufacturerString%=Microsoft,NT$ARCH$.10.0...22000
 
 [Microsoft.NT$ARCH$.10.0...22000]
-%DeviceDesc%=vhidmini, root\vhidmini
+%DeviceDesc%=vhidmini, HID_DEVICE_UP:0084_U:0004
 
 [vhidmini.NT]
 CopyFiles=KMDriverCopy
